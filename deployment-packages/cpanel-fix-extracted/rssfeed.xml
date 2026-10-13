@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>No. 1 News Web Solution on CodeCanyon: Stay Informed and Engaged!</title>
+        <link>https://newstailwind.vercel.app</link>
+        <description>Discover the top news web solution on Codeacnyon! Get the latest and most relevant news with our user-friendly and efficient platform. Stay informed with ease</description>
+        <lastBuildDate>Thu, 23 Apr 2026 09:47:57 GMT</lastBuildDate>
+        <docs>https://validator.w3.org/feed/docs/rss2.html</docs>
+        <generator>https://github.com/jpmonette/feed</generator>
+        <copyright>All rights reserved 2026</copyright>
+        <item>
+            <title><![CDATA[NDTV Videos]]></title>
+            <link>https://newstailwind.vercel.app/undefined/41</link>
+            <guid>https://newstailwind.vercel.app/undefined/41</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[NDTV Latest]]></title>
+            <link>https://newstailwind.vercel.app/undefined/40</link>
+            <guid>https://newstailwind.vercel.app/undefined/40</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[India Today World]]></title>
+            <link>https://newstailwind.vercel.app/undefined/39</link>
+            <guid>https://newstailwind.vercel.app/undefined/39</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[Religion 12]]></title>
+            <link>https://newstailwind.vercel.app/undefined/37</link>
+            <guid>https://newstailwind.vercel.app/undefined/37</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[https://timesofindia.indiatimes.com/rssfeeds/296589292.cms]]></title>
+            <link>https://newstailwind.vercel.app/undefined/17</link>
+            <guid>https://newstailwind.vercel.app/undefined/17</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+        <item>
+            <title><![CDATA[8]]></title>
+            <link>https://newstailwind.vercel.app/undefined/16</link>
+            <guid>https://newstailwind.vercel.app/undefined/16</guid>
+            <pubDate>Thu, 23 Apr 2026 09:47:57 GMT</pubDate>
+        </item>
+    </channel>
+</rss>

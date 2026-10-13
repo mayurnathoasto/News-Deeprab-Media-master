@@ -1,0 +1,39 @@
+{
+    "version": "https://jsonfeed.org/version/1",
+    "title": "No. 1 News Web Solution on CodeCanyon: Stay Informed and Engaged!",
+    "home_page_url": "https://newstailwind.vercel.app",
+    "feed_url": "https://newstailwind.vercel.app/rssfeed.json",
+    "description": "Discover the top news web solution on Codeacnyon! Get the latest and most relevant news with our user-friendly and efficient platform. Stay informed with ease",
+    "items": [
+        {
+            "url": "https://newstailwind.vercel.app/undefined/41",
+            "title": "NDTV Videos",
+            "date_modified": "2026-04-23T09:47:57.072Z"
+        },
+        {
+            "url": "https://newstailwind.vercel.app/undefined/40",
+            "title": "NDTV Latest",
+            "date_modified": "2026-04-23T09:47:57.073Z"
+        },
+        {
+            "url": "https://newstailwind.vercel.app/undefined/39",
+            "title": "India Today World",
+            "date_modified": "2026-04-23T09:47:57.073Z"
+        },
+        {
+            "url": "https://newstailwind.vercel.app/undefined/37",
+            "title": "Religion 12",
+            "date_modified": "2026-04-23T09:47:57.073Z"
+        },
+        {
+            "url": "https://newstailwind.vercel.app/undefined/17",
+            "title": "https://timesofindia.indiatimes.com/rssfeeds/296589292.cms",
+            "date_modified": "2026-04-23T09:47:57.073Z"
+        },
+        {
+            "url": "https://newstailwind.vercel.app/undefined/16",
+            "title": "8",
+            "date_modified": "2026-04-23T09:47:57.073Z"
+        }
+    ]
+}

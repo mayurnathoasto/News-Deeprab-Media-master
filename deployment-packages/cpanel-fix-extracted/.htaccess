@@ -1,0 +1,43 @@
+Options -MultiViews
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^_next/(.*)$ /next-assets/$1 [L]
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+RewriteRule ^([A-Za-z-]+)/?$ /[langCode].html [L]
+RewriteRule ^([A-Za-z-]+)/all-breaking-news/?$ /[langCode]/all-breaking-news.html [L]
+RewriteRule ^([A-Za-z-]+)/bookmark/?$ /[langCode]/bookmark.html [L]
+RewriteRule ^([A-Za-z-]+)/create-news/?$ /[langCode]/create-news.html [L]
+RewriteRule ^([A-Za-z-]+)/edit-news/?$ /[langCode]/edit-news.html [L]
+RewriteRule ^([A-Za-z-]+)/enews/?$ /[langCode]/enews.html [L]
+RewriteRule ^([A-Za-z-]+)/live-news/?$ /[langCode]/live-news.html [L]
+RewriteRule ^([A-Za-z-]+)/manage-news/?$ /[langCode]/manage-news.html [L]
+RewriteRule ^([A-Za-z-]+)/profile-update/?$ /[langCode]/profile-update.html [L]
+RewriteRule ^([A-Za-z-]+)/rss-feed/?$ /[langCode]/rss-feed.html [L]
+RewriteRule ^([A-Za-z-]+)/user-based-categories/?$ /[langCode]/user-based-categories.html [L]
+RewriteRule ^([A-Za-z-]+)/video-news/?$ /[langCode]/video-news.html [L]
+
+RewriteRule ^([A-Za-z-]+)/author-details/([^/]+)/?$ /[langCode]/author-details/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/breaking-news/([^/]+)/?$ /[langCode]/breaking-news/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/categories-news/sub-category/([^/]+)/([^/]+)/?$ /[langCode]/categories-news/sub-category/[slug]/[subCateSlug].html [L]
+RewriteRule ^([A-Za-z-]+)/categories-news/sub-category/([^/]+)/?$ /[langCode]/categories-news/sub-category/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/categories-news/([^/]+)/([^/]+)/?$ /[langCode]/categories-news/[slug]/[cateSlug].html [L]
+RewriteRule ^([A-Za-z-]+)/categories-news/([^/]+)/?$ /[langCode]/categories-news/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/more-pages/([^/]+)/?$ /[langCode]/more-pages/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/news/([^/]+)/?$ /[langCode]/news/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/policy-page/privacy-policy/?$ /[langCode]/policy-page/privacy-policy.html [L]
+RewriteRule ^([A-Za-z-]+)/policy-page/terms-condition/?$ /[langCode]/policy-page/terms-condition.html [L]
+RewriteRule ^([A-Za-z-]+)/tag/([^/]+)/?$ /[langCode]/tag/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/video-news/([^/]+)/?$ /[langCode]/video-news/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/view-all/related-news/([^/]+)/?$ /[langCode]/view-all/related-news/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/view-all/([^/]+)/?$ /[langCode]/view-all/[slug].html [L]
+RewriteRule ^([A-Za-z-]+)/([^/]+)/?$ /[langCode]/[slug].html [L]
+
+ErrorDocument 404 /404.html
