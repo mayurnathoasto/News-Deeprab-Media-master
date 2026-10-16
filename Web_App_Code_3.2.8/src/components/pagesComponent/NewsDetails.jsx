@@ -569,11 +569,11 @@ const NewsDetails = ({ breakingNews }) => {
                               {!breakingNews && (
                                 <>
                                   {data?.user?.name && <span className="text-[#af2c2c] font-bold">By {data?.user?.name}</span>}
-                                  {data?.user?.name && <span className="text-gray-500">|</span>}
+                                  {data?.user?.name && <span className="text-gray-500 select-none iq-meta-separator">|</span>}
                                   <span>{(data?.published_date || data?.date) && !isNaN(new Date(data?.published_date || data?.date)) ? new Date(data?.published_date || data?.date).toLocaleString('en-us', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : (data?.published_date || data?.date || 'Recently')}</span>
-                                  <span className="text-gray-500">|</span>
+                                  <span className="text-gray-500 select-none iq-meta-separator">|</span>
                                   <span>{data?.total_views} Views</span>
-                                  <span className="text-gray-500">|</span>
+                                  <span className="text-gray-500 select-none iq-meta-separator">|</span>
                                   <span>{readTime} min read</span>
                                 </>
                               )}

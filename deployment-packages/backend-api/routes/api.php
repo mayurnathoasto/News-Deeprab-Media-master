@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\RssApiController;
 use App\Http\Controllers\Api\SettingsApiController;
 use App\Http\Controllers\Api\UserApiController;
 use App\Http\Controllers\Api\SurveyApiController;
+use App\Http\Controllers\Api\WebStoryApiController;
 use App\Http\Controllers\Api\LanguageApiController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,12 @@ Route::post('get_tag',                     [SettingsApiController::class, 'getTa
 Route::post('get_notification',            [SettingsApiController::class, 'getNotification']);
 Route::post('get_web_seo_pages',           [SettingsApiController::class, 'getWebSeoPages']);
 Route::post('get_ad_space_news_details',   [SettingsApiController::class, 'getAdSpaceNewsDetails']);
+Route::post('get_ad_space_home_sidebar',   [SettingsApiController::class, 'getAdSpaceHomeSidebar']);
+Route::post('get_web_stories',             [WebStoryApiController::class, 'getWebStories']);
+Route::post('track_web_story_event',       [WebStoryApiController::class, 'trackWebStoryEvent']);
+Route::post('get_question_result',          [SurveyApiController::class, 'getQuestionResult']);
+Route::post('set_question_result',          [SurveyApiController::class, 'setQuestionResult']);
+Route::post('get_question',                 [SurveyApiController::class, 'getQuestion']);
 
 // ---- Languages ----
 Route::post('get_languages_list',          [LanguageApiController::class, 'getLanguagesList']);
@@ -79,11 +86,6 @@ Route::group(['middleware' => ['auth:sanctum', 'sanitize']], function () {
     Route::post('get_user_drafted_news', [NewsApiController::class, 'getUserDraftedNews']);
     Route::post('create_tag',         [NewsApiController::class, 'createTag']);
 
-    // Survey / Questions
-    Route::post('get_question_result', [SurveyApiController::class, 'getQuestionResult']);
-    Route::post('set_question_result', [SurveyApiController::class, 'setQuestionResult']);
-    Route::post('get_question',        [SurveyApiController::class, 'getQuestion']);
-
     // Bookmarks & Likes
     Route::post('get_bookmark',    [BookmarkLikeApiController::class, 'getBookmark']);
     Route::post('set_bookmark',    [BookmarkLikeApiController::class, 'setBookmark']);
@@ -111,4 +113,4 @@ Route::group(['middleware' => ['auth:sanctum', 'sanitize']], function () {
 Route::post('get_e_news', [ContentApiController::class, 'getENews']);
 
 // ---- Feed items from RSS source ----
-Route::post('get_feed_items', [ContentApiController::class, 'getFeedItems']);
+Route::match(['get', 'post'], 'get_feed_items', [ContentApiController::class, 'getFeedItems']);

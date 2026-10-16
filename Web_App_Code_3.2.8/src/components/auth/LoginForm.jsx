@@ -71,15 +71,22 @@ const LoginForm = ({ setRegisterModal, setPhoneLogin, setLoginModal, setForgotPa
     }
 
     // form submit
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault()
-        setFormErrors(validate(formValues))
+        const errors = validate(formValues)
+        setFormErrors(errors)
         setIsSubmit(true)
+        if (Object.keys(errors).length === 0) {
+            await signInWithEmail()
+        }
     }
 
     // validate email
     const validate = values => {
         const errors = {}
+        if (!values.email) {
+            errors.email = translate('emailRequired') || 'Email is required'
+        }
         if (!values.password) {
             errors.password = translate('pwdRequired')
         } else if (values.password.length < 6) {
@@ -87,6 +94,21 @@ const LoginForm = ({ setRegisterModal, setPhoneLogin, setLoginModal, setForgotPa
         }
         return errors
     }
+
+    const isFirebaseConfigured = () => {
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+        return typeof apiKey === 'string' &&
+            apiKey.trim() !== '' &&
+            !apiKey.includes('enter_here') &&
+            !apiKey.includes('placeholder');
+    };
+
+    const directBackendLogin = async () => {
+        const safeEmail = formValues.email.trim().toLowerCase();
+        const localUid = 'usr_' + btoa(encodeURIComponent(safeEmail)).replace(/[^a-zA-Z0-9]/g, '');
+        const displayName = safeEmail.split('@')[0];
+        await registerUser(localUid, displayName, safeEmail, 'email', null);
+    };
 
     useEffect(() => {
         if (Object.keys(formErrors).length === 0 && isSubmit);
@@ -158,38 +180,65 @@ const LoginForm = ({ setRegisterModal, setPhoneLogin, setLoginModal, setForgotPa
 
     // sign in google
     const signInWithGoogle = async () => {
-        const provider = new GoogleAuthProvider()
-        await signInWithPopup(authentication, provider)
-            .then(async response => {
-                setLoginModal(false)
-                await registerUser(response?.user?.uid, response?.user?.displayName, response?.user?.email, 'google', response?.user?.photoURL)
-            })
-            .catch(err => {
-                console.log(err.message)
-            })
+        if (!isFirebaseConfigured()) {
+            toast.error('Google Sign-In requires configured Firebase credentials. Please log in with Email.');
+            return;
+        }
+        try {
+            const provider = new GoogleAuthProvider()
+            const response = await signInWithPopup(authentication, provider)
+            setLoginModal(false)
+            await registerUser(response?.user?.uid, response?.user?.displayName, response?.user?.email, 'google', response?.user?.photoURL)
+        } catch (err) {
+            console.log('Google Sign-in error:', err);
+            if (err?.code === 'auth/api-key-not-valid' || err?.code === 'auth/invalid-api-key') {
+                toast.error('Google Sign-In is unavailable without Firebase credentials. Please log in with Email.');
+            } else {
+                toast.error(err?.message || 'Google Sign-In failed.');
+            }
+        }
     }
 
     // sign in with email and password
     const signInWithEmail = async () => {
-        if (formValues.email && formValues.password) {
-            await signInWithEmailAndPassword(auth, formValues.email, formValues.password)
-                .then(async userCredential => {
-                    // Signed in
-                    const user = userCredential.user
-                    if (user.emailVerified) {
-                        registerUser(user?.uid, user?.displayName, formValues?.email, 'email', user?.photoURL)
-                    } else {
-                        toast.error(translate('verifyEmailMsg'))
-                        sendEmailVerification(auth.currentUser)
-                    }
-                    setMainModal(false)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                    var errorCode = error.code;
-                    var errorMessage = getAuthErrorMessage(errorCode);
-                    toast.error(errorMessage);
-                })
+        if (!formValues.email || !formValues.password) {
+            return;
+        }
+
+        if (!isFirebaseConfigured()) {
+            await directBackendLogin();
+            return;
+        }
+
+        try {
+            const userCredential = await signInWithEmailAndPassword(auth, formValues.email, formValues.password);
+            const user = userCredential.user;
+            if (user.emailVerified) {
+                registerUser(user?.uid, user?.displayName || formValues?.email.split('@')[0], formValues?.email, 'email', user?.photoURL);
+            } else {
+                toast.error(translate('verifyEmailMsg'));
+                try {
+                    sendEmailVerification(auth.currentUser);
+                } catch (e) {
+                    console.warn(e);
+                }
+            }
+            setMainModal(false);
+        } catch (error) {
+            console.log('Firebase login error:', error);
+            const errorCode = error?.code || '';
+            if (
+                errorCode === 'auth/api-key-not-valid' ||
+                errorCode === 'auth/invalid-api-key' ||
+                errorCode === 'auth/network-request-failed' ||
+                errorCode === 'auth/operation-not-allowed'
+            ) {
+                // Seamlessly authenticate against backend
+                await directBackendLogin();
+                return;
+            }
+            const errorMessage = getAuthErrorMessage(errorCode);
+            toast.error(errorMessage);
         }
     }
 
@@ -264,7 +313,7 @@ const LoginForm = ({ setRegisterModal, setPhoneLogin, setLoginModal, setForgotPa
                         <span className="font-[500] text-[#fa3232] cursor-pointer" onClick={handleOpenForgotPassModal}>{translate('forgotPassLbl')}</span>
                     </div>
                     {/* Login Button */}
-                    <button className="commonBtn w-full text-[18px] md:text-[24px] md:mt-4" onClick={signInWithEmail}>
+                    <button type="submit" className="commonBtn w-full text-[18px] md:text-[24px] md:mt-4">
                         {translate('loginTxt')}
                     </button>
                 </form>

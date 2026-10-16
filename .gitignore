@@ -65,3 +65,11 @@ desktop.ini
 .vscode/
 **/.vscode/
 *.iml
+
+# =====================================
+# Backups & Debug
+# =====================================
+*.github-backup
+*.local-backup
+local-fix-backup/
+**/storage/debugbar/

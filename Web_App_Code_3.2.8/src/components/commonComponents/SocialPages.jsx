@@ -9,6 +9,7 @@ import DetailPageSkeleton from '../skeletons/DetailPageSkeleton'
 import { translate } from '@/utils/translation';
 import RichTextContent from './RichTextContent'
 import NoDataFound from './NoDataFound'
+import toast from 'react-hot-toast'
 
 const SocialPages = () => {
 
@@ -84,25 +85,23 @@ const SocialPages = () => {
                                         </div>
                                     </div>
 
-                                    {/* Team Section */}
+                                    {/* Editorial Values Section */}
                                     <div className="mt-16">
                                         <div className="flex items-center mb-8 border-b-2 border-gray-900 pb-2">
                                             <span className="bg-[#af2c2c] w-2 h-8 mr-3 block"></span>
-                                            <h2 className="text-2xl md:text-3xl font-[800] uppercase tracking-wider text-gray-900 dark:text-white" style={{ fontFamily: "var(--headline-font-family)" }}>Our Leadership Team</h2>
+                                            <h2 className="text-2xl md:text-3xl font-[800] uppercase tracking-wider text-gray-900 dark:text-white" style={{ fontFamily: "var(--headline-font-family)" }}>Our Editorial Principles</h2>
                                         </div>
-                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
                                             {[
-                                                { name: "John Doe", role: "Editor-in-Chief", img: "https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" },
-                                                { name: "Sarah Smith", role: "Managing Editor", img: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format&fit=crop" },
-                                                { name: "Michael Lee", role: "Head of Digital", img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format&fit=crop" },
-                                                { name: "Emma Davis", role: "Lead Investigative Journalist", img: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop" }
-                                            ].map((member, i) => (
-                                                <div key={i} className="group text-center">
-                                                    <div className="w-40 h-40 mx-auto rounded-full overflow-hidden mb-4 shadow-sm border-4 border-gray-100 dark:border-gray-800 relative">
-                                                        <img src={member.img} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
-                                                    </div>
-                                                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1" style={{ fontFamily: "var(--headline-font-family)" }}>{member.name}</h3>
-                                                    <p className="text-[#af2c2c] font-semibold text-sm uppercase tracking-wide">{member.role}</p>
+                                                { title: "Journalistic Integrity", desc: "Upholding the highest ethical standards of truth, balance, and independence in every story we publish.", icon: "⚖️" },
+                                                { title: "Fact-Checked Accuracy", desc: "Rigorous verification procedures and multi-source confirmation before any report goes live.", icon: "🔍" },
+                                                { title: "Public Interest Focus", desc: "Committed to highlighting matters that impact society, holding power accountable with transparency.", icon: "🌍" },
+                                                { title: "Unbiased Coverage", desc: "Delivering objective news without political, commercial, or partisan influence.", icon: "📰" }
+                                            ].map((value, i) => (
+                                                <div key={i} className="p-6 rounded-2xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-sm hover:shadow-md transition-all duration-300">
+                                                    <div className="text-3xl mb-3">{value.icon}</div>
+                                                    <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2" style={{ fontFamily: "var(--headline-font-family)" }}>{value.title}</h3>
+                                                    <p className="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">{value.desc}</p>
                                                 </div>
                                             ))}
                                         </div>
@@ -142,14 +141,14 @@ const SocialPages = () => {
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
                                                 ),
                                                 title: "Our Office",
-                                                detail: "123 Media Street, Press Lane\nNew Delhi, India - 110001"
+                                                detail: "SIPS Meerut, Vedviyas Puri"
                                             },
                                             {
                                                 icon: (
                                                     <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
                                                 ),
                                                 title: "Email Us",
-                                                detail: "contact@deeprabmedia.com\nsupport@deeprabmedia.com"
+                                                detail: "info@deeprab.com"
                                             },
                                             {
                                                 icon: (
@@ -178,11 +177,30 @@ const SocialPages = () => {
                                                 <span className="bg-[#af2c2c] w-1.5 h-7 mr-3 block rounded"></span>
                                                 <h2 className="text-2xl font-[800] uppercase tracking-wider text-gray-900 dark:text-white" style={{ fontFamily: "var(--headline-font-family)" }}>Send Us a Message</h2>
                                             </div>
-                                            <form onSubmit={(e) => e.preventDefault()} className="space-y-5">
+                                            <form
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    const form = e.target;
+                                                    const name = form.elements['name']?.value?.trim();
+                                                    const email = form.elements['email']?.value?.trim();
+                                                    const message = form.elements['message']?.value?.trim();
+                                                    if (!name || !email || !message) {
+                                                        toast.error('Please fill in your name, email, and message.');
+                                                        return;
+                                                    }
+                                                    form.reset();
+                                                    toast.success('Thank you for reaching out! Your message has been sent to the Deeprab Media editorial desk.', {
+                                                        duration: 5000
+                                                    });
+                                                }}
+                                                className="space-y-5"
+                                            >
                                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                                                     <div>
                                                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Full Name *</label>
                                                         <input
+                                                            name="name"
+                                                            required
                                                             type="text"
                                                             placeholder="John Doe"
                                                             className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#af2c2c] focus:border-transparent transition text-sm"
@@ -191,6 +209,8 @@ const SocialPages = () => {
                                                     <div>
                                                         <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Email Address *</label>
                                                         <input
+                                                            name="email"
+                                                            required
                                                             type="email"
                                                             placeholder="john@example.com"
                                                             className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#af2c2c] focus:border-transparent transition text-sm"
@@ -200,6 +220,7 @@ const SocialPages = () => {
                                                 <div>
                                                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Subject</label>
                                                     <input
+                                                        name="subject"
                                                         type="text"
                                                         placeholder="How can we help?"
                                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#af2c2c] focus:border-transparent transition text-sm"
@@ -208,6 +229,8 @@ const SocialPages = () => {
                                                 <div>
                                                     <label className="block text-sm font-semibold text-gray-700 dark:text-gray-300 mb-1.5">Message *</label>
                                                     <textarea
+                                                        name="message"
+                                                        required
                                                         rows="5"
                                                         placeholder="Write your message here..."
                                                         className="w-full px-4 py-3 rounded-xl border border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#af2c2c] focus:border-transparent transition text-sm resize-none"
@@ -215,7 +238,7 @@ const SocialPages = () => {
                                                 </div>
                                                 <button
                                                     type="submit"
-                                                    className="w-full py-3.5 rounded-xl text-white font-[700] uppercase tracking-widest text-sm transition-all duration-300 hover:opacity-90 hover:shadow-lg"
+                                                    className="w-full py-3.5 rounded-xl text-white font-[700] uppercase tracking-widest text-sm transition-all duration-300 hover:opacity-90 hover:shadow-lg cursor-pointer"
                                                     style={{ background: 'linear-gradient(135deg, #af2c2c, #d94040)' }}
                                                 >
                                                     Send Message →
@@ -253,14 +276,16 @@ const SocialPages = () => {
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-3">
                                                     {[
-                                                        { name: "Facebook", color: "#1877F2", icon: "f" },
-                                                        { name: "Twitter", color: "#1DA1F2", icon: "𝕏" },
-                                                        { name: "Instagram", color: "#E1306C", icon: "📷" },
-                                                        { name: "YouTube", color: "#FF0000", icon: "▶" }
+                                                        { name: "Facebook", color: "#1877F2", icon: "f", url: "https://facebook.com" },
+                                                        { name: "Twitter", color: "#1DA1F2", icon: "𝕏", url: "https://twitter.com" },
+                                                        { name: "Instagram", color: "#E1306C", icon: "📷", url: "https://instagram.com" },
+                                                        { name: "YouTube", color: "#FF0000", icon: "▶", url: "https://youtube.com" }
                                                     ].map((social, i) => (
                                                         <a
                                                             key={i}
-                                                            href="#"
+                                                            href={social.url}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
                                                             className="flex items-center gap-2 px-3 py-2.5 rounded-xl text-white text-xs font-semibold transition-all duration-200 hover:opacity-85 hover:scale-105"
                                                             style={{ background: social.color }}
                                                         >
@@ -272,12 +297,6 @@ const SocialPages = () => {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {data[0]?.page_content && (
-                                        <div className="mt-10 pt-8 border-t dark:border-gray-800">
-                                            <RichTextContent content={data[0]?.page_content} />
-                                        </div>
-                                    )}
                                 </div>
 
                             ) : data[0]?.page_content ? (

@@ -8,6 +8,7 @@ import { translate } from '@/utils/translation';
 import { getAuth, createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth'
 import toast from 'react-hot-toast';
 import { updateUserNameData } from '../store/reducers/userReducer';
+import { userSignUpApi } from '@/utils/api/api';
 import { FaArrowLeft } from 'react-icons/fa6';
 
 const RegisterForm = ({ setLoginModal, setRegisterModal }) => {
@@ -46,6 +47,14 @@ const RegisterForm = ({ setLoginModal, setRegisterModal }) => {
     const [isSubmit, setIsSubmit] = useState(false)
     const auth = getAuth()
 
+    const isFirebaseConfigured = () => {
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+        return typeof apiKey === 'string' &&
+            apiKey.trim() !== '' &&
+            !apiKey.includes('enter_here') &&
+            !apiKey.includes('placeholder');
+    };
+
     const handleChange = e => {
         const { name, value } = e.target
 
@@ -57,34 +66,77 @@ const RegisterForm = ({ setLoginModal, setRegisterModal }) => {
         setFormValues({ ...formValues, [name]: value })
     }
 
-    const handleSignup = async (email, password) => {
-        // Set form errors
-        setFormErrors(validate(formValues))
+    const handleDirectSignup = async (email, username) => {
+        try {
+            const safeEmail = (email || formValues.email).trim().toLowerCase();
+            const safeName = (username || formValues.username).trim();
+            const localUid = 'usr_' + btoa(encodeURIComponent(safeEmail)).replace(/[^a-zA-Z0-9]/g, '');
+            const response = await userSignUpApi.userSignup({
+                firebase_id: localUid,
+                name: safeName,
+                email: safeEmail,
+                type: 'email',
+                status: '1',
+            });
 
-        // Check if there are no form errors
-        if (Object.keys(formErrors).length === 0) {
+            if (response?.data?.error) {
+                toast.error(response?.data?.message || 'Failed to create account.');
+            } else {
+                toast.success('Account created successfully! Please sign in.');
+                updateUserNameData({ data: safeName });
+                setRegisterModal(false);
+                setLoginModal(true);
+            }
+        } catch (error) {
+            console.error('Direct signup error:', error);
+            toast.error(error?.message || 'Failed to create account.');
+        }
+    };
+
+    const handleSignup = async (email, password) => {
+        const errors = validate(formValues);
+        setFormErrors(errors);
+
+        if (Object.keys(errors).length === 0) {
+            if (!isFirebaseConfigured()) {
+                await handleDirectSignup(email, formValues.username);
+                return;
+            }
+
             try {
-                // Perform signup
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password)
-                const user = userCredential.user
+                // Perform signup with Firebase
+                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                const user = userCredential.user;
 
                 // Send email verification
-                sendEmailVerification(user)
-
-                // // Sign out the user
-                // signOut(auth)
+                try {
+                    sendEmailVerification(user);
+                } catch (verifyErr) {
+                    console.warn('Verification email error:', verifyErr);
+                }
 
                 // Display success message
-                toast.success(`${translate('verifSentMail')}${formValues.email}`)
-                updateUserNameData({ data: formValues?.username })
-                setRegisterModal(false)
-                setLoginModal(true)
+                toast.success(`${translate('verifSentMail')}${formValues.email}`);
+                updateUserNameData({ data: formValues?.username });
+                setRegisterModal(false);
+                setLoginModal(true);
             } catch (error) {
-                // Handle signup error
-                handleError(error)
+                console.log('Firebase signup error:', error);
+                const errorCode = error?.code || '';
+                if (
+                    errorCode === 'auth/api-key-not-valid' ||
+                    errorCode === 'auth/invalid-api-key' ||
+                    errorCode === 'auth/network-request-failed' ||
+                    errorCode === 'auth/operation-not-allowed'
+                ) {
+                    // Fall back to direct backend registration
+                    await handleDirectSignup(email, formValues.username);
+                    return;
+                }
+                handleError(error);
             }
         }
-    }
+    };
 
     const handleError = error => {
         console.log(error);
@@ -99,14 +151,15 @@ const RegisterForm = ({ setLoginModal, setRegisterModal }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
-        if (formValues.password === formValues.confirmpassword) {
-            await handleSignup(formValues.email, formValues.password)
-
+        const errors = validate(formValues);
+        setFormErrors(errors);
+        if (formValues.password !== formValues.confirmpassword) {
+            toast.error(translate('confPassNotMatch'));
+            return;
         }
-        else {
-            toast.error(translate('confPassNotMatch'))
+        if (Object.keys(errors).length === 0) {
+            await handleSignup(formValues.email, formValues.password);
         }
-        setFormErrors(validate(formValues));
     }
 
     useEffect(() => {

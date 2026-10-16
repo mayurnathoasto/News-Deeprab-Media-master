@@ -7,12 +7,12 @@ import LocationSelector from '../location/LocationSelector'
 import PollCard from '../polls/PollCard'
 
 const getCategoryName = (item) =>
-  item?.category_name || item?.category?.category_name || item?.category?.name || 'IQ News'
+  item?.category_name || item?.category?.category_name || item?.category?.name || 'Deeprab Media'
 
 const getSummary = (item) =>
   item?.summarized_description ||
   item?.description?.replace(/<[^>]*>/g, '') ||
-  'Read the latest report and analysis from IQ News.'
+  'Read the latest report and analysis from Deeprab Media.'
 
 export const articleHref = (item, langCode, type = 'news') => {
   if (!item?.slug) return `/${langCode}`
@@ -36,7 +36,7 @@ export const EditorialHeading = ({ title, href, accent = false, aside }) => (
 const StoryImage = ({ item, className = '' }) => (
   <img
     src={newsImageSrc(item?.image)}
-    alt={item?.title || 'IQ News'}
+    alt={item?.title || 'Deeprab Media'}
     className={className}
     loading="lazy"
     onError={placeholderImage}
@@ -140,7 +140,7 @@ export const ExclusiveSection = ({ items, langCode }) => {
 
   return (
     <section className="iq-editorial-section iq-exclusive-section">
-      <EditorialHeading title="IQ News Exclusive" accent href={`/${langCode}`} />
+      <EditorialHeading title="Deeprab Exclusive" accent href={`/${langCode}`} />
       <div className="iq-exclusive-grid">
         {items.slice(0, 6).map((item) => (
           <Link href={articleHref(item, langCode)} className="iq-exclusive-item" key={`exclusive-${item.id}`}>

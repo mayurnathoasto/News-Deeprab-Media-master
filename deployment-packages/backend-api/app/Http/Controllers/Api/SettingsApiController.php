@@ -181,7 +181,10 @@ class SettingsApiController extends BaseApiController
 
             $total = Location::count('id');
             if ($total == 0) {
-                return ResponseService::errorResponse(__('No Data Found'), null, config('constants.RESPONSE_CODE.NOT_FOUND'), null);
+                return ResponseService::successResponse(__('Data fetched successfully'), [
+                    'total' => 0,
+                    'data' => [],
+                ]);
             }
 
             $data = Location::select('id', 'location_name', 'latitude', 'longitude')
@@ -364,6 +367,34 @@ class SettingsApiController extends BaseApiController
             return ResponseService::successResponse(__('Data fetched successfully'), $data);
         } catch (Exception $e) {
             ResponseService::logErrorResponse($e, 'SettingsApiController -> getAdSpaceNewsDetails');
+            return ResponseService::errorResponse(__('Something Went Wrong'), null, config('constants.RESPONSE_CODE.EXCEPTION_ERROR'), $e);
+        }
+    }
+
+    // -------------------------------------------------------------------------
+    // Home Sidebar Ad Spaces
+    // -------------------------------------------------------------------------
+
+    public function getAdSpaceHomeSidebar(Request $request)
+    {
+        try {
+            $languageId = $this->resolveLanguageId($request);
+            $data       = [];
+
+            $ads = AdSpaces::where('language_id', $languageId)
+                ->where('status', 1)
+                ->where('ad_space', 'home_right_sidebar')
+                ->get();
+
+            if ($ads->isEmpty()) {
+                return ResponseService::errorResponse(__('No Data Found'), null, config('constants.RESPONSE_CODE.NOT_FOUND'), null);
+            }
+
+            $data['sidebar_ads'] = $ads;
+
+            return ResponseService::successResponse(__('Data fetched successfully'), $data);
+        } catch (Exception $e) {
+            ResponseService::logErrorResponse($e, 'SettingsApiController -> getAdSpaceHomeSidebar');
             return ResponseService::errorResponse(__('Something Went Wrong'), null, config('constants.RESPONSE_CODE.EXCEPTION_ERROR'), $e);
         }
     }

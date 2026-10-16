@@ -14,6 +14,9 @@ const GoogleTranslate = dynamic(() => import('@/components/commonComponents/Goog
 import 'nprogress/nprogress.css'
 import 'react-loading-skeleton/dist/skeleton.css'
 
+// Disable NProgress spinner globally
+NProgress.configure({ showSpinner: false, trickleSpeed: 200 });
+
 export default function App({ Component, pageProps }) {
 
   // Register service worker for PWA
@@ -46,15 +49,20 @@ export default function App({ Component, pageProps }) {
     }
   }, []);
 
-  Router.events.on('routeChangeStart', () => {
-    NProgress.start()
-  })
-  Router.events.on('routeChangeError', () => {
-    NProgress.done()
-  })
-  Router.events.on('routeChangeComplete', () => {
-    NProgress.done()
-  })
+  useEffect(() => {
+    const handleStart = () => NProgress.start();
+    const handleStop = () => NProgress.done();
+
+    Router.events.on('routeChangeStart', handleStart);
+    Router.events.on('routeChangeError', handleStop);
+    Router.events.on('routeChangeComplete', handleStop);
+
+    return () => {
+      Router.events.off('routeChangeStart', handleStart);
+      Router.events.off('routeChangeError', handleStop);
+      Router.events.off('routeChangeComplete', handleStop);
+    };
+  }, []);
 
   return <main>
     <Provider store={store}>

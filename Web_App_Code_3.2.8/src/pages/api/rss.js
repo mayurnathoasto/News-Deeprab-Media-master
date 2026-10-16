@@ -1,49 +1,94 @@
-// import { GET_RSS_FEED_BY_ID } from "@/utils/api/api";
-// import { Feed } from "feed";
-// export default async function generateRssFeed(allPosts) {
+import { Feed } from "feed";
+import axios from "axios";
 
-//   let fs;
-//   if (typeof window === "undefined") {
-//     fs = require("fs");
-//   } else {
-//     // Early return if we're in the browser
-//     console.warn("generateRssFeed was called in browser environment where fs is unavailable");
-//     return;
-//   }
+export async function generateRssFeed(allPosts) {
+  // Safe helper for callers; dynamic RSS feed is served by the HTTP API handler below
+  return null;
+}
 
+export default async function handler(req, res) {
+  // If invoked programmatically without Next.js response object (e.g. from [langCode]/index.js)
+  if (!res || typeof res.status !== 'function') {
+    return null;
+  }
 
-//   const siteURL = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:3000";
+  try {
+    const siteURL = (process.env.NEXT_PUBLIC_WEB_URL || "https://deeprab.com").replace(/\/$/, "");
+    const date = new Date();
 
-//   const date = new Date();
+    const feed = new Feed({
+      title: process.env.NEXT_PUBLIC_TITLE || "Deeprab Media RSS Feed",
+      description: process.env.NEXT_PUBLIC_DESCRIPTION || "Latest news and updates from Deeprab Media",
+      id: siteURL,
+      link: siteURL,
+      language: req.query?.lang || "en",
+      image: `${siteURL}/storage/logos/iq-news-main.png`,
+      favicon: `${siteURL}/favicon.ico`,
+      copyright: `All rights reserved ${date.getFullYear()}, Deeprab Media`,
+      updated: date,
+      feedLinks: {
+        rss2: `${siteURL}/api/rss?format=xml`,
+        json: `${siteURL}/api/rss?format=json`,
+      },
+      author: {
+        name: "Deeprab Media",
+        email: "info@deeprab.com",
+        link: siteURL,
+      },
+    });
 
-//   const posts = allPosts?.data;
+    // Attempt to fetch articles from backend API
+    try {
+      const apiEndpoint = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}/${process.env.NEXT_PUBLIC_END_POINT || 'api'}/get_feed_items`;
+      const response = await axios.post(
+        apiEndpoint,
+        {
+          per_page: 25,
+          language_code: req.query?.lang || 'en',
+        },
+        {
+          timeout: 5000,
+        }
+      );
 
-//   const feed = new Feed({
-//     title: process.env.NEXT_PUBLIC_TITLE,
-//     description: process.env.NEXT_PUBLIC_DESCRIPTION,
-//     id: siteURL,
-//     link: siteURL || "http://localhost:3000",
-//     copyright: `All rights reserved ${date.getFullYear()}`,
-//     pubDate: new Date(),
-//     feedLinks: {
-//       rss2: `${siteURL}/rssfeed.xml`,
-//       json: `${siteURL}/rssfeed.json`
-//     },
-//   });
+      const feedData = response?.data?.data?.data || response?.data?.data || [];
+      if (Array.isArray(feedData) && feedData.length > 0) {
+        feedData.forEach((item) => {
+          const itemUrl = item.link || (item.slug ? `${siteURL}/en/news/${item.slug}` : siteURL);
+          feed.addItem({
+            title: item.title || item.feed_name || 'News Update',
+            id: itemUrl,
+            link: itemUrl,
+            description: item.description || item.summary || '',
+            content: item.description || item.summary || '',
+            author: [
+              {
+                name: item.source?.feed_name || item.author || "Deeprab Newsroom",
+                link: siteURL,
+              },
+            ],
+            date: item.published_at ? new Date(item.published_at) : (item.date ? new Date(item.date) : new Date()),
+            image: item.image || item.thumbnail || undefined,
+            category: item.source?.category?.category_name ? [{ name: item.source.category.category_name }] : undefined,
+          });
+        });
+      }
+    } catch (apiError) {
+      console.warn("Backend API not reachable for RSS items, serving empty feed template", apiError?.message);
+    }
 
-//   posts.map((post) => {
-//     const url = `${siteURL}/${GET_RSS_FEED_BY_ID}/${post?.id}`;
-//     feed.addItem({
-//       title: post.feed_name,
-//       description: post.description,
-//       guid: url,
-//       link: url,
-//       category: post.category?.category_name,
-//       date: new Date(),
-//     });
-//   });
+    const format = req.query?.format || (req.headers?.accept?.includes('application/json') ? 'json' : 'xml');
 
-//   // fs.mkdirSync("./public/rss", { recursive: true });
-//   fs.writeFileSync("./public/rssfeed.xml", feed.rss2());
-//   fs.writeFileSync("./public/rssfeed.json", feed.json1());
-// }
+    if (format === 'json') {
+      res.setHeader('Content-Type', 'application/json; charset=utf-8');
+      return res.status(200).send(feed.json1());
+    }
+
+    res.setHeader('Content-Type', 'application/xml; charset=utf-8');
+    res.setHeader('Cache-Control', 's-maxage=600, stale-while-revalidate=1200');
+    return res.status(200).send(feed.rss2());
+  } catch (error) {
+    console.error("RSS generation error:", error);
+    return res.status(500).json({ error: "Failed to generate RSS feed" });
+  }
+}

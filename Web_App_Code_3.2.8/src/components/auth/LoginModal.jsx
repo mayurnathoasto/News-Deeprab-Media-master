@@ -64,12 +64,12 @@ export default function LoginModal({ onClose = () => { } }) {
       <DialogContent className="loginModal bodyBgColor p-0 overflow-hidden">
         {/* the dialog title is added just for the removing console warning */}
         <DialogTitle className='hidden'></DialogTitle>
-        <DialogDescription className='hidden'>Sign in to your IQ News account.</DialogDescription>
+        <DialogDescription className='hidden'>Sign in to your Deeprab Media account.</DialogDescription>
         <div className="loginModalGrid grid grid-cols-1 lg:grid-cols-2">
 
           {/* Left Image Section */}
           <div className="loginModalVisual hidden lg:block relative after:content-[''] overflow-hidden after:absolute after:top-0 after:left-0 after:h-full after:w-full after:bg-[#0003]">
-            <Image src={'/storage/logos/iq-news-main.png'} height={0} width={0} alt="logo" className="h-[60px] w-[180px] xl:w-[130px] 2xl:w-[180px] object-contain absolute top-8 left-8 z-[1]" onError={placeholderImage} loading='lazy' />
+            <Image src={darkLogo || '/storage/logos/deeprab-logo-dark.svg'} height={0} width={0} alt="Deeprab Media" className="h-[50px] w-auto max-w-[180px] object-contain absolute top-8 left-8 z-[1]" onError={placeholderImage} loading='lazy' />
             <Image src={img} height={0} width={0} alt="login-img" className="h-full w-full object-cover commonRadius" onError={placeholderImage} loading='lazy' />
           </div>
           {

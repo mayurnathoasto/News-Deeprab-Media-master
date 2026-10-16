@@ -9,6 +9,7 @@ import { FiChevronDown, FiMenu, FiX } from 'react-icons/fi'
 import { categoriesSelector } from '../store/reducers/CategoriesReducer'
 import { settingsSelector } from '../store/reducers/settingsReducer'
 import { checkNewsDataSelector } from '../store/reducers/CheckNewsDataReducer'
+import { themeSelector } from '../store/reducers/CheckThemeReducer'
 import { currentLangCode, defaultLanguageCode } from '@/utils/helpers'
 
 const SearchModal = dynamic(() => import('../search/SearchModal'), { ssr: false })
@@ -20,7 +21,31 @@ const Header = () => {
   const categories = useSelector(categoriesSelector)
   const settingsData = useSelector(settingsSelector)
   const checkNewsData = useSelector(checkNewsDataSelector)
+  const darkThemeMode = useSelector(themeSelector)
   const langCode = currentLangCode() || defaultLanguageCode() || 'en'
+
+  const darkLogo = settingsData?.data?.web_setting?.dark_header_logo
+  const lightLogo = settingsData?.data?.web_setting?.light_header_logo
+
+  const cleanLogoUrl = (url, fallback) => {
+    if (!url) return fallback
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      try {
+        const parsed = new URL(url)
+        return parsed.pathname
+      } catch (e) {
+        return url
+      }
+    }
+    return url
+  }
+
+  const darkLogoPath = cleanLogoUrl(darkLogo, '/storage/logos/deeprab-logo-dark.svg')
+  const lightLogoPath = cleanLogoUrl(lightLogo, '/storage/logos/deeprab-logo.svg')
+  // Brand row and sticky nav logo box both have dark (#323c48) background
+  const brandLogoUrl = darkLogoPath
+  // Drawer has var(--body-color) background (light in light mode, dark in dark mode)
+  const drawerLogoUrl = darkThemeMode ? darkLogoPath : lightLogoPath
 
   const showLiveNews =
     settingsData?.data?.live_streaming_mode === '1' &&
@@ -65,7 +90,7 @@ const Header = () => {
       <div className="iq-brand-row">
         <div className="container iq-brand-inner">
           <Link href={`/${langCode}`} aria-label="IQ News home">
-            <img src="/storage/logos/iq-news-main.png" alt="IQ News" />
+            <img src={brandLogoUrl} alt="IQ News" className="max-h-[60px] object-contain" />
           </Link>
         </div>
       </div>
@@ -73,7 +98,7 @@ const Header = () => {
       <nav className="iq-main-nav" aria-label="Primary navigation">
         <div className="container iq-main-nav-inner">
           <Link href={`/${langCode}`} className="iq-sticky-logo" aria-label="IQ News home">
-            <img src="/storage/logos/iq-news-main.png" alt="" />
+            <img src={brandLogoUrl} alt="IQ News" className="max-h-[32px] object-contain" />
           </Link>
 
           <div className="iq-main-links">
@@ -117,7 +142,7 @@ const Header = () => {
       <div className={drawerOpen ? 'iq-drawer-overlay open' : 'iq-drawer-overlay'} onClick={() => setDrawerOpen(false)} aria-hidden={!drawerOpen} />
       <aside className={drawerOpen ? 'iq-nav-drawer open' : 'iq-nav-drawer'} aria-label="All navigation">
         <div className="iq-drawer-header">
-          <img src="/storage/logos/iq-news-main.png" alt="IQ News" />
+          <img src={drawerLogoUrl} alt="IQ News" className="max-h-[50px] object-contain" />
           <button type="button" onClick={() => setDrawerOpen(false)} aria-label="Close navigation menu"><FiX aria-hidden="true" /></button>
         </div>
 

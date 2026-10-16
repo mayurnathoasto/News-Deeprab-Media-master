@@ -127,7 +127,7 @@ const InfiniteArticleItem = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-200 dark:border-gray-800 pb-4 iq-article-meta-row">
         <div className="flex items-center gap-3 text-[13px] text-gray-700 dark:text-gray-300 font-medium flex-wrap">
           {article?.user?.name && <span className="text-[#af2c2c] font-bold">By {article.user.name}</span>}
-          {article?.user?.name && <span className="text-gray-500">|</span>}
+          {article?.user?.name && <span className="text-gray-500 select-none iq-meta-separator">|</span>}
           <span>
             {(article?.published_date || article?.date) && !isNaN(new Date(article?.published_date || article?.date))
               ? new Date(article?.published_date || article?.date).toLocaleString('en-us', {
@@ -139,9 +139,9 @@ const InfiniteArticleItem = ({
                 })
               : (article?.published_date || article?.date || 'Recently')}
           </span>
-          <span className="text-gray-500">|</span>
+          <span className="text-gray-500 select-none iq-meta-separator">|</span>
           <span>{article?.total_views || 0} Views</span>
-          <span className="text-gray-500">|</span>
+          <span className="text-gray-500 select-none iq-meta-separator">|</span>
           <span>{readTime} min read</span>
         </div>
 

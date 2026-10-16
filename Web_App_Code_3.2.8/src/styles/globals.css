@@ -907,8 +907,32 @@ input[type=number]::-webkit-outer-spin-button {
   box-shadow: none !important;
 }
 
+#nprogress .spinner,
 #nprogress .spinner-icon {
   display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Selection Containment & Chrome Isolation */
+.iq-observed-article,
+.iq-article-content,
+.detailPage .news-description,
+.iq-article-main h1 {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.iq-article-meta-row .iq-meta-separator,
+.iq-article-actions,
+.iq-utility-bar,
+.iq-main-nav,
+.iq-ticker-badge,
+.breadcrumb,
+.select-none {
+  user-select: none !important;
+  -webkit-user-select: none !important;
 }
 
 .dropdownTrigg svg {
@@ -1362,16 +1386,19 @@ input[type="checkbox"] {
 }
 
 .iq-sticky-logo {
-  width: 86px;
-  flex: 0 0 86px;
-  padding: 3px 6px;
-  border-radius: 4px;
+  width: 140px;
+  flex: 0 0 140px;
+  padding: 4px 8px;
+  border-radius: 6px;
   background: #323c48;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .iq-sticky-logo img {
   width: 100%;
-  height: 36px;
+  height: 32px;
   object-fit: contain;
 }
 
@@ -2273,8 +2300,8 @@ input[type="checkbox"] {
   }
 
   .iq-sticky-logo {
-    width: 78px;
-    flex-basis: 78px;
+    width: 120px;
+    flex-basis: 120px;
   }
 
   .iq-live-action {

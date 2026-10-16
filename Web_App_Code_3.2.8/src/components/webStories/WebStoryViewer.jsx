@@ -84,18 +84,37 @@ const WebStoryViewer = ({ story, langCode }) => {
         >
           {story.category_name && <div className="inline-flex bg-[#af2c2c] text-white text-[10px] font-bold uppercase tracking-wider px-2 py-1 rounded-sm mb-3">{story.category_name}</div>}
           {page.headline && <h1 className="webStoryHeadline text-2xl sm:text-3xl font-extrabold leading-tight mb-3">{page.headline}</h1>}
-          {page.body && <p className="webStoryBody text-sm sm:text-base font-medium leading-relaxed text-white/90">{page.body}</p>}
-          {page.cta_url && page.cta_label && (
-            <a
-              href={page.cta_url}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => getWebStoriesApi.trackEvent({ story_id: story.id, event: 'outbound_click' }).catch(() => {})}
-              className="webStoryCta mt-5 inline-flex items-center gap-2 rounded-full bg-white text-[#0c1424] px-4 py-2 text-sm font-bold"
-            >
-              {page.cta_label} <ExternalLink size={14} />
-            </a>
-          )}
+          {(() => {
+            let url = page?.cta_url?.trim();
+            let label = page?.cta_label?.trim();
+
+            if (!url && (story?.news_slug || story?.slug)) {
+              url = `/${langCode}/news/${story.news_slug || story.slug}`;
+              if (!label) label = 'Read Source';
+            }
+
+            if (!url) return null;
+
+            let isExternal = false;
+            if (/^https?:\/\//i.test(url)) {
+              isExternal = true;
+            } else if (!url.startsWith('/')) {
+              url = `https://${url}`;
+              isExternal = true;
+            }
+
+            return (
+              <a
+                href={url}
+                target={isExternal ? "_blank" : "_self"}
+                rel={isExternal ? "noopener noreferrer" : undefined}
+                onClick={() => getWebStoriesApi.trackEvent({ story_id: story.id, event: 'outbound_click' }).catch(() => {})}
+                className="webStoryCta mt-5 inline-flex items-center gap-2 rounded-full bg-white text-[#0c1424] px-4 py-2 text-sm font-bold shadow-md hover:bg-gray-100 transition-colors"
+              >
+                {label || 'Read Source'} <ExternalLink size={14} />
+              </a>
+            );
+          })()}
         </article>
       </div>
     </main>

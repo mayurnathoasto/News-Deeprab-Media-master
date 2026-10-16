@@ -52,7 +52,7 @@ const NewsletterFooter = ({ settingsData }) => {
 
       setLoading(false)
       setIsSubscribed(true)
-      toast.success('Thank you for subscribing to IQ News briefing!', {
+      toast.success('Thank you for subscribing to Deeprab Media briefing!', {
         duration: 4000,
         position: 'bottom-right'
       })

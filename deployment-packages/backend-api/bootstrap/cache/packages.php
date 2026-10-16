@@ -10,13 +10,6 @@
       0 => 'dacoto\\EnvSet\\EnvSetServiceProvider',
     ),
   ),
-  'dacoto/laravel-wizard-installer' => 
-  array (
-    'providers' => 
-    array (
-      0 => 'dacoto\\LaravelWizardInstaller\\LaravelWizardInstallerServiceProvider',
-    ),
-  ),
   'fruitcake/laravel-debugbar' => 
   array (
     'aliases' => 

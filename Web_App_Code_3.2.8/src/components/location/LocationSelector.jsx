@@ -206,7 +206,7 @@ const LocationSelector = ({ compact = false, showWeather = true, className = '' 
               )}
             </div>
             {!process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY && (
-              <small>Search uses the locations configured in the IQ News admin panel.</small>
+              <small>Search uses the locations configured in the Deeprab Media admin panel.</small>
             )}
           </div>
         </div>
