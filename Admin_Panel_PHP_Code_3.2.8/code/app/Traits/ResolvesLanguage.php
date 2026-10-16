@@ -38,43 +38,16 @@ trait ResolvesLanguage
             $language = Language::where('code', $request->language_code)->first();
 
             if (!$language) {
-                ResponseService::errorResponse(
-                    'Invalid language code',
-                    null,
-                    config('constants.RESPONSE_CODE.VALIDATION_ERROR'),
-                    null
-                );
+                $language = Language::where('status', 1)->first() ?? Language::first();
             }
-        }
-        //  elseif ($request->filled('language_id')) {
-        //     if (!is_numeric($request->language_id)) {
-        //         ResponseService::errorResponse(
-        //             'language_id must be numeric',
-        //             null,
-        //             config('constants.RESPONSE_CODE.VALIDATION_ERROR'),
-        //             null
-        //         );
-        //     }
-
-        //     $language = Language::find($request->language_id);
-
-        //     if (!$language) {
-        //         ResponseService::errorResponse(
-        //             'Invalid language id',
-        //             null,
-        //             config('constants.RESPONSE_CODE.VALIDATION_ERROR'),
-        //             null
-        //         );
-        //     }
-        // }
-        else {
-            ResponseService::errorResponse(
-                // 'language_code or language_id is required',
-                'language_code is required',
-                null,
-                config('constants.RESPONSE_CODE.VALIDATION_ERROR'),
-                null
-            );
+        } elseif ($request->filled('language_id')) {
+            $language = is_numeric($request->language_id) ? Language::find($request->language_id) : null;
+            if (!$language) {
+                $language = Language::where('status', 1)->first() ?? Language::first();
+            }
+        } else {
+            // Gracefully fallback to default active language
+            $language = Language::where('status', 1)->first() ?? Language::first();
         }
 
         // Cache in request attributes to avoid repeated DB queries

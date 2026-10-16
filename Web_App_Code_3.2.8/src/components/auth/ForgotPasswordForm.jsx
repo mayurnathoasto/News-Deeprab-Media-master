@@ -24,14 +24,24 @@ const ForgotPasswordForm = ({ setForgotPassModal, setLoginModal }) => {
 
     const handleSubmit = async e => {
         e.preventDefault()
-        // setFormErrors(validate(formValues))
         setFormErrors(formValues)
         setIsSubmit(true)
+
+        const apiKey = process.env.NEXT_PUBLIC_API_KEY;
+        const isFirebaseConfigured = typeof apiKey === 'string' &&
+            apiKey.trim() !== '' &&
+            !apiKey.includes('enter_here') &&
+            !apiKey.includes('placeholder');
+
+        if (!isFirebaseConfigured) {
+            toast.error('Automated password reset requires active mail credentials. Please contact support at info@deeprab.com.');
+            return;
+        }
+
         const auth = getAuth()
         await sendPasswordResetEmail(auth, formValues.email)
             .then(userCredential => {
                 toast.success(translate('passReset'))
-                // ...
                 setForgotPassModal(false)
                 setLoginModal(true)
             })

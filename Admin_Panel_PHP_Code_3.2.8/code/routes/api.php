@@ -113,4 +113,4 @@ Route::group(['middleware' => ['auth:sanctum', 'sanitize']], function () {
 Route::post('get_e_news', [ContentApiController::class, 'getENews']);
 
 // ---- Feed items from RSS source ----
-Route::post('get_feed_items', [ContentApiController::class, 'getFeedItems']);
+Route::match(['get', 'post'], 'get_feed_items', [ContentApiController::class, 'getFeedItems']);

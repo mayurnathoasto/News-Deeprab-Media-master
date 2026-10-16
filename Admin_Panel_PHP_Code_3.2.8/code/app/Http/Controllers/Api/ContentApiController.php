@@ -7,6 +7,7 @@ use App\Models\BreakingNews;
 use App\Models\BreakingNewsView;
 use App\Models\Enews;
 use App\Models\Category;
+use App\Models\SubCategory;
 use App\Models\FeaturedSections;
 use App\Models\FeedItem;
 use App\Models\News_view;
@@ -278,17 +279,17 @@ class ContentApiController extends BaseApiController
             $languageId = $this->resolveLanguageId($request);
 
             $validator = Validator::make($request->all(), [
-                'per_page'    => 'nullable|integer|min:1|max:100',
-                'category_ids' => 'nullable|string|exists:tbl_category,id',
-                'sub_category_ids' => 'nullable|string|exists:tbl_subcategory,id',
-                'source_ids'  => 'nullable|string|exists:tbl_rss,id',
+                'per_page'         => 'nullable|integer|min:1|max:100',
+                'category_ids'     => 'nullable|string',
+                'sub_category_ids' => 'nullable|string',
+                'source_ids'       => 'nullable|string',
+                'days'             => 'nullable|integer|min:1',
             ]);
             if ($validator->fails()) {
                 return ResponseService::validationError($validator->errors()->first());
             }
 
-            $perPage   = $request->per_page ?? 10;
-            $freshness = Carbon::now()->subDays(3);
+            $perPage = (int) ($request->per_page ?? 10);
 
             $categoryIds = $request->category_ids
                 ? array_values(array_filter(array_map('intval', explode(',', $request->category_ids))))
@@ -304,7 +305,7 @@ class ContentApiController extends BaseApiController
                 $categoryIds = Category::whereIn('id', $categoryIds)->pluck('id')->toArray();
             }
             if ($subCategoryIds) {
-                $subCategoryIds = Category::whereIn('id', $subCategoryIds)->pluck('id')->toArray();
+                $subCategoryIds = SubCategory::whereIn('id', $subCategoryIds)->pluck('id')->toArray();
             }
             if ($sourceIds) {
                 $sourceIds = RSS::whereIn('id', $sourceIds)->where('status', 1)->pluck('id')->toArray();
@@ -318,15 +319,15 @@ class ContentApiController extends BaseApiController
                 ->whereHas('source', function ($query) use ($languageId, $categoryIds, $subCategoryIds) {
                     $query->where('language_id', $languageId)
                         ->when($categoryIds, fn($q) => $q->whereIn('category_id', $categoryIds))
-                        ->when($subCategoryIds, fn($q) => $q->whereIn('subcategory_id', $subCategoryIds));
-                    // status 1 of rss sources
-                    $query->where('status', 1);
+                        ->when($subCategoryIds, fn($q) => $q->whereIn('subcategory_id', $subCategoryIds))
+                        ->where('status', 1);
                 })
                 ->when($sourceIds, fn($query) => $query->whereIn('rss_source_id', $sourceIds))
-                ->where('published_at', '>=', $freshness)
+                ->when($request->filled('days'), function ($q) use ($request) {
+                    $q->where('published_at', '>=', Carbon::now()->subDays((int)$request->days));
+                })
                 ->whereNotNull('published_at')
                 ->orderBy('published_at', 'DESC')
-                ->inRandomOrder()
                 ->paginate($perPage);
 
             foreach ($feedItems as $item) {

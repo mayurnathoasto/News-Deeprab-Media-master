@@ -56,7 +56,13 @@ const lightFallbackImage = '/storage/logos/placeholder.png';
 const darkFallbackImage = '/storage/logos/placeholder-dark.png';
 
 export const newsImageSrc = (src, isDarkMode = false) => {
-  return typeof src === 'string' && src.trim() ? src : (isDarkMode ? darkFallbackImage : lightFallbackImage);
+  if (typeof src !== 'string' || !src.trim()) {
+    return isDarkMode ? darkFallbackImage : lightFallbackImage;
+  }
+  let cleanSrc = src.trim();
+  // If image URL points to local/internal backend host, normalize to relative path
+  cleanSrc = cleanSrc.replace(/^https?:\/\/(127\.0\.0\.1|localhost)(:\d+)?/i, '');
+  return cleanSrc || (isDarkMode ? darkFallbackImage : lightFallbackImage);
 };
 
 // Replace failed remote images with a local asset that is always shipped with the site.
@@ -181,8 +187,9 @@ export const getAuthErrorMessage = (errorCode) => {
       return "Expired Popup Request";
     case "auth/internal-error":
       return "Internal Error";
+    case "auth/api-key-not-valid":
     case "auth/invalid-api-key":
-      return "Invalid API Key";
+      return "Firebase API key is invalid or not configured.";
     case "auth/invalid-app-credential":
       return "Invalid App Credential";
     case "auth/invalid-app-id":

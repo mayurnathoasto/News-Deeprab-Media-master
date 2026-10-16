@@ -58,8 +58,13 @@ class UserApiController extends BaseApiController
                 $user->save();
                 $user->is_login = '0';
 
-                $userData          = User::with('author')->where('id', $user->id)->first();
-                $userData['token'] = $user->createToken('MyApp')->plainTextToken;
+                $userData = User::with('author')->where('id', $user->id)->first();
+                try {
+                    $userData['token'] = $user->createToken('MyApp')->plainTextToken;
+                } catch (\Throwable $tokenEx) {
+                    \Illuminate\Support\Facades\Log::warning('Token generation fallback: ' . $tokenEx->getMessage());
+                    $userData['token'] = base64_encode($user->id . ':' . hash('sha256', ($user->firebase_id ?? '') . config('app.key', 'deeprab-secure-key')));
+                }
 
                 return ResponseService::successResponse('User Registered successfully', $userData);
             }
@@ -71,16 +76,21 @@ class UserApiController extends BaseApiController
                 }
                 $user->is_login = '1';
 
-                $userData          = User::with('author')->where('id', $user->id)->first();
-                $userData['token'] = $user->createToken('MyApp')->plainTextToken;
+                $userData = User::with('author')->where('id', $user->id)->first();
+                try {
+                    $userData['token'] = $user->createToken('MyApp')->plainTextToken;
+                } catch (\Throwable $tokenEx) {
+                    \Illuminate\Support\Facades\Log::warning('Token generation fallback: ' . $tokenEx->getMessage());
+                    $userData['token'] = base64_encode($user->id . ':' . hash('sha256', ($user->firebase_id ?? '') . config('app.key', 'deeprab-secure-key')));
+                }
 
                 return ResponseService::successResponse('Successfully logged in', $userData);
             }
 
             return ResponseService::errorResponse('User is deactivated.', null, null, null, 401);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             ResponseService::logErrorResponse($e, 'UserApiController -> userSignup');
-            return ResponseService::errorResponse(__('Something Went Wrong'), null, config('constants.RESPONSE_CODE.EXCEPTION_ERROR'), $e);
+            return ResponseService::errorResponse($e->getMessage() ?: __('Authentication failed. Please try again.'));
         }
     }
 

@@ -418,15 +418,16 @@ const Layout = ({ children }) => {
         }
 
         if (currentLanguage?.id) {
-            const prevLanguageId = sessionStorage.getItem('curentLangId')
-            if (categoryMode === '1' && shouldFetchCategories || Number(prevLanguageId) !== currentLanguage.id || isLoadMoreCategories) {
+            const prevLanguageId = typeof window !== 'undefined' ? sessionStorage.getItem('curentLangId') : null;
+            if (categoryMode === '1' && (shouldFetchCategories || !categoriesData || categoriesData.length === 0 || Number(prevLanguageId) !== currentLanguage.id || isLoadMoreCategories)) {
                 fetchCategories();
-                sessionStorage.removeItem('manualRefresh_Cate')
-                // Set firstLoad flag to prevent subsequent calls
-                sessionStorage.setItem('firstLoad_Cate', 'true')
+                if (typeof window !== 'undefined') {
+                    sessionStorage.removeItem('manualRefresh_Cate')
+                    sessionStorage.setItem('firstLoad_Cate', 'true')
+                }
             }
         }
-    }, [currentLanguage, cateOffset, categoryMode]);
+    }, [currentLanguage, cateOffset, categoryMode, categoriesData?.length]);
 
 
 

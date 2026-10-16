@@ -151,12 +151,12 @@ const Footer = () => {
       <div className="container">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className='flex flex-col gap-8'>
-            <Link href={`/${currLangCode ? currLangCode : defaultLangCode}`} className='inline-flex w-fit rounded-md bg-[#9aa3ae] px-5 py-4'>
+            <Link href={`/${currLangCode ? currLangCode : defaultLangCode}`} className='inline-flex w-fit items-center py-1' aria-label="IQ News home">
               <img
-                src={'/storage/logos/iq-news-main.png'}
-                alt='logo'
+                src={fixLogoUrl(darkLogo) || '/storage/logos/deeprab-logo-dark.svg'}
+                alt='IQ News'
                 loading='lazy'
-                className='w-[150px] h-[80px] object-contain'
+                className='h-[48px] w-auto max-w-[210px] object-contain'
               />
             </Link>
             <div className=''>

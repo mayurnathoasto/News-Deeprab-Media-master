@@ -41,8 +41,16 @@ export const getEmbeddableVideoUrl = url => {
   return trimmedUrl
 }
 
-const isHLSUrl = url => url?.endsWith('.m3u8')
-const isDashUrl = url => url?.endsWith('.mpd') || url?.includes('manifest.mpd')
+const isHLSUrl = url => {
+  if (!url) return false
+  const clean = String(url).split('?')[0].split('#')[0].toLowerCase()
+  return clean.endsWith('.m3u8')
+}
+const isDashUrl = url => {
+  if (!url) return false
+  const clean = String(url).split('?')[0].split('#')[0].toLowerCase()
+  return clean.endsWith('.mpd') || clean.includes('manifest.mpd')
+}
 const isIframeUrl = (url, type) => {
   return type === 'video_other' ||
     type === 'url_other' ||

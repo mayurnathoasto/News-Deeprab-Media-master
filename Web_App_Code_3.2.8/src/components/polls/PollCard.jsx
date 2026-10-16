@@ -75,7 +75,7 @@ const PollCard = ({ compact = false }) => {
 
   return (
     <aside className={`iq-poll-card ${compact ? 'compact' : ''}`} aria-label="Current poll">
-      <div className="iq-poll-kicker"><FiBarChart2 aria-hidden="true" /> IQ News Poll</div>
+      <div className="iq-poll-kicker"><FiBarChart2 aria-hidden="true" /> Deeprab Media Poll</div>
       <h3>{poll.question}</h3>
       <div className="iq-poll-options">
         {(poll.survey_options || []).map((option) => {

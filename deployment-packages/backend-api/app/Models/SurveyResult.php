@@ -11,7 +11,7 @@ class SurveyResult extends Model
 
     protected $table = 'tbl_survey_result';
 
-    protected $fillable = ['question_id', 'option_id', 'user_id', 'result'];
+    protected $fillable = ['question_id', 'option_id', 'user_id', 'voter_key', 'result'];
 
     public function question()
     {

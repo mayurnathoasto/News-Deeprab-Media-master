@@ -11,7 +11,12 @@ class SurveyOption extends Model
 
     protected $table = 'tbl_survey_option';
 
-    protected $fillable = ['question_id', 'options', 'counter'];
+    protected $fillable = ['question_id', 'options', 'counter', 'manual_votes'];
+
+    protected $casts = [
+        'counter' => 'integer',
+        'manual_votes' => 'integer',
+    ];
 
     public function result()
     {
