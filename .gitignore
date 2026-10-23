@@ -73,3 +73,11 @@ desktop.ini
 *.local-backup
 local-fix-backup/
 **/storage/debugbar/
+
+# Local deployment artifacts
+/Web_App_Code_3.2.8/cpanel-deploy-latest/
+/Web_App_Code_3.2.8/inqtube-frontend-cpanel-latest.zip
+
+# Local environment backups
+/Web_App_Code_3.2.8/.env.before-production-build
+/Web_App_Code_3.2.8/.env.production.local
