@@ -70,7 +70,9 @@ const RssFeeds = () => {
                 setIsLoading({ loadMoreLoading: false })
             }
             else {
-                console.log('error =>', data?.message)
+                if (data?.error) {
+                    console.warn('RSS Feed error:', data?.message)
+                }
                 setData([])
                 setTotalData(0)
                 setIsLoading({ loading: false, loadMoreLoading: false })
