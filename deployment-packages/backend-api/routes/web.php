@@ -147,7 +147,7 @@ Route::get('schedule-run', static function () {
     // return redirect()->back();
 });
 Route::get('feed-crawl', static function () {
-    Artisan::call('feed:crawl');
+    Artisan::call('feeds:crawl');
     Log::info("Feed crawl completed");
     return redirect()->back();
 });
